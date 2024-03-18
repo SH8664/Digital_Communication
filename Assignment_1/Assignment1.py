@@ -122,12 +122,10 @@ plot_SNR(n_bits_range, [snr_values],[theoretical_snr], ['SNR'],['Theoretical SNR
 #########################################################################################
 
 # Generate random input signal (10,000 samples)
-np.random.seed(0)  # For reproducibility
-polarity = np.random.randint(0, 2, size=10000) * 2 - 1
-
-
-# Generate random values from exponential distribution with rate=40 and sample size=10
-magnitude = np.random.exponential(scale=1, size=10000)
+np.random.seed(42)
+num_samples = 10000
+polarity = np.random.choice([-1, 1], size=num_samples, p=[0.5, 0.5])
+magnitude = np.random.exponential(size=num_samples)
 input_signal = polarity * magnitude
 
 # Parameters
