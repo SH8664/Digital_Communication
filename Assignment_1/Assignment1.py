@@ -93,8 +93,6 @@ input_signal = np.random.uniform(low=-5, high=5, size=10000)
 xmax = 5
 m = 0
 n_bits_range = range(2, 9)
-
-
 # Initialize arrays for SNR and quantization error
 snr_values = []
 theoretical_snr =  [ ]
@@ -108,13 +106,15 @@ for n_bits in n_bits_range:
     quant_error = input_signal - deq_val
     # Calculate SNR
     snr = np.mean(input_signal**2) / np.mean(quant_error**2)
-    snr_values.append(10 * np.log10(snr))  # Convert to dB
+    snr_values.append(snr)  # Convert to dB
+    
     input_power = np.mean(input_signal**2)
-    theoretical_snr.append(10*np.log10((3 * (2 ** n_bits) ** 2 * input_power) /xmax**2))
-
+    theoretical_snr.append((3 * (2 ** n_bits) ** 2 * input_power) /xmax**2)
 # Plot SNR vs n_bits
-plot_SNR(n_bits_range, [snr_values],[theoretical_snr], ['SNR'],['Theoretical SNR'], 'Number of Bits (n_bits)', 'SNR (dB)', 'Simulation SNR vs. Number of Bits (Uniform Input)')
-
+plot_SNR(n_bits_range, [10 * np.log10(snr_values)],[10 * np.log10(theoretical_snr)],
+     ['SNR'],['Theoretical SNR'], 'Number of Bits (n_bits)', 'SNR (dB)', 'Simulation SNR vs. Number of Bits (Uniform Input)')
+plot_SNR(n_bits_range, [snr_values],[theoretical_snr],
+     ['SNR'],['Theoretical SNR'], 'Number of Bits (n_bits)', 'SNR (linear)', 'Simulation SNR vs. Number of Bits (Uniform Input)')
 
 #########################################################################################
 #                                     Requirement 5                                     #
@@ -149,12 +149,13 @@ for n_bits in n_bits_range:
     
     # Calculate SNR manually
     snr = np.mean(input_signal**2) / np.mean(quant_error**2)
-    snr_values.append(10 * np.log10(snr))  # Convert to dB
+    snr_values.append(snr)  # Convert to dB
     input_power = np.mean(input_signal**2)
-    theoretical_snr.append(10*np.log10((3 * (2 ** n_bits) ** 2 * input_power) /xmax**2))
+    theoretical_snr.append((3 * (2 ** n_bits) ** 2 * input_power) /xmax**2)
 
 # Plot SNR vs n_bits
-plot_SNR(n_bits_range, [snr_values],[theoretical_snr], ['SNR'],['Theoretical SNR'], 'Number of Bits (n_bits)', 'SNR (dB)', 'Simulation SNR vs. Number of Bits (Non-Uniform Input)')
+plot_SNR(n_bits_range, [10 * np.log10(snr_values)],[10 * np.log10(theoretical_snr)], ['SNR'],['Theoretical SNR'], 'Number of Bits (n_bits)', 'SNR (dB)', 'Simulation SNR vs. Number of Bits (Non-Uniform Input)')
+plot_SNR(n_bits_range, [snr_values],[theoretical_snr], ['SNR'],['Theoretical SNR'], 'Number of Bits (n_bits)', 'SNR (linear)', 'Simulation SNR vs. Number of Bits (Non-Uniform Input)')
 
 #########################################################################################
 #                                     Requirement 6                                     #
@@ -196,17 +197,18 @@ for mu in mu_values:
         
         # Calculate SNR
         snr = np.mean(input_signal**2) / np.mean(quant_error**2)
-        snr_values.append(10 * np.log10(snr))  # Convert to dB
+        snr_values.append(snr)  # Convert to dB
         input_power = np.mean(input_signal**2)
         if (mu > 0):
-            theoretical_snr.append(10*np.log10((3 * (2 ** n_bits) ** 2) / (np.log(1 + mu) ** 2)))
+            theoretical_snr.append((3 * (2 ** n_bits) ** 2) / (np.log(1 + mu) ** 2))
         else:
-            theoretical_snr.append(10*np.log10((3 * (2 ** n_bits) ** 2 * input_power) /xmax**2))
+            theoretical_snr.append((3 * (2 ** n_bits) ** 2 * input_power) /xmax**2)
     Sim_SNR.append(snr_values)
     Theor_SNR.append(theoretical_snr)
 
 # Plot SNR vs n_bits
 Sim_labels = ['SNR for mu = 0', 'SNR for mu = 5', 'SNR for mu = 100', 'SNR for mu = 200']
 Theo_labels = ['Theoretical SNR for mu = 0', 'Theoretical SNR for mu = 5', 'Theoretical SNR for mu = 100', 'Theoretical SNR for mu = 200']
-plot_SNR(n_bits_range, Sim_SNR, Theor_SNR, Sim_labels, Theo_labels, 'Number of Bits (n_bits)', 'SNR (dB)', 'Simulation SNR and Theoritical SNR vs. Number of Bits (Non-Uniform Quantizer)')
+plot_SNR(n_bits_range, 10 * np.log10(Sim_SNR), 10 * np.log10(Theor_SNR), Sim_labels, Theo_labels, 'Number of Bits (n_bits)', 'SNR (dB)', 'Simulation SNR and Theoritical SNR vs. Number of Bits (Non-Uniform Quantizer)')
+plot_SNR(n_bits_range, Sim_SNR, Theor_SNR, Sim_labels, Theo_labels, 'Number of Bits (n_bits)', 'SNR (linear)', 'Simulation SNR and Theoritical SNR vs. Number of Bits (Non-Uniform Quantizer)')
 
