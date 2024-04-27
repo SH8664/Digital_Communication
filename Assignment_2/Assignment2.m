@@ -4,7 +4,6 @@ clear ;
 close all;
 
 samples_number = 10;
-disp(samples_number);
 bits = [1,0,1,0,1,1,1,0,1,0,1,1,1];
 bits_number = length(bits);
 
@@ -76,9 +75,9 @@ BER_2 = err_prob_2/bits_number;
 err_prob_3 = sum(output_3_samples ~= bits);
 BER_3 = err_prob_3/bits_number;
 
-disp(BER_1);
-disp(BER_2);
-disp(BER_3);
+% disp(BER_1);
+% disp(BER_2);
+% disp(BER_3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % calculate BER for different SNR 
@@ -112,13 +111,14 @@ for i = 1:length(snr_range)
     output_2_samples = sample(output{2},bits_number,samples_number);
     output_3_samples = sample(output{3},bits_number,samples_number);
 
-    disp(size(bits));
+    % disp(size(bits));
     % Calculate errors and BER for each filter
     err_prob_1 = sum(output_1_samples.' ~= bits);
     BER_sim_1(i) = err_prob_1 / bits_number;
     err_prob_2 = sum(output_2_samples.' ~= bits);
     BER_sim_2(i) = err_prob_2 / bits_number;
     err_prob_3 = sum(output_3_samples.' ~= bits);
+    disp(BER_sim_1)
     BER_sim_3(i) = err_prob_3 / bits_number;
     BER_theo_1(i)=0.5*erfc(sqrt(snr));
     BER_theo_2(i)=0.5*erfc(sqrt(snr));
@@ -130,17 +130,35 @@ figure;
 semilogy(snr_range, BER_theo_1, 'b-');
 hold on;
 semilogy(snr_range, BER_sim_1, 'm--');
+hold off;
+title('Matched Filter');
+ylim([10^-4 0.5]);
+xlabel('SNR (dB)');
+ylabel('BER (Log)');
+legend('Theoretical', 'Simulation');
+
+figure;
 semilogy(snr_range, BER_theo_2, 'r:');
+hold on;
 semilogy(snr_range, BER_sim_2, 'g--');
+hold off;
+title('No Filter');
+ylim([10^-4 0.5]);
+xlabel('SNR (dB)');
+ylabel('BER (Log)');
+legend('Theoretical', 'Simulation');
+
+figure;
 semilogy(snr_range, BER_theo_3, 'c--');
+hold on;
 semilogy(snr_range, BER_sim_3, 'y--');
 hold off;
 
+title('impulse response Filter h(t)=sqrt(3)*t');
 ylim([10^-4 0.5]);
 xlabel('SNR (dB)');
-ylabel('BER');
-legend('Theo 1', 'Sim (Matched Filter)', 'Theo 2', 'Sim (No Filter)', 'Theo 3', 'Sim (Custom Filter)');
-
+ylabel('BER (Log)');
+legend('Theoretical', 'Simulation');
 
 function [input] = pulse_shape(bits_number,samples_number,bits)
    input = ones(bits_number,samples_number);
